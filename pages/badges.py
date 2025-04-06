@@ -31,55 +31,45 @@ col1, col2 = st.columns(2)
 with col1:
     st.badge(
         "Premium", 
-        color="#FFD700",  # Gold color
+        color="rainbow",
         icon="⭐"
     )
 with col2:
     st.badge(
         "1.44.0", 
-        color="#9C27B0",  # Purple
-        text_color="#FFFFFF"
+        color="orange"
     )
 
 st.code('''
 # With custom styling
 st.badge(
     "Premium", 
-    color="#FFD700",  # Gold color
+    color="rainbow",
     icon="⭐"
 )
 
 st.badge(
     "1.44.0", 
-    color="#9C27B0",  # Purple
-    text_color="#FFFFFF"
+    color="orange"
 )
 ''')
 
 st.divider()
 
 st.subheader("Badges in Markdown")
-st.markdown("""
+st.markdown(
+    """
 You can also use badges directly in markdown using the new directive:
 
-Normal text with a !badge[NEW]{color=red} feature and a !badge[BETA]{color=blue} component.
+Normal text with a :red-badge[NEW] feature and a :blue-badge[BETA] component.
 
 Code example:
 ```markdown
-Normal text with a !badge[NEW]{color=red} feature and a !badge[BETA]{color=blue} component.
+Normal text with a :red-badge[NEW] feature and a :blue-badge[BETA] component.
 ```
 
 This makes it easier to integrate badges with your text content!
-""")
+"""
+)
 
 st.divider()
-
-st.subheader("Inline with Text")
-st.write("This feature", st.badge("NEW", color="red"), "was just released!")
-st.write("Status:", st.badge("Passing", color="green", icon="✓"))
-
-st.code('''
-# Inline with text
-st.write("This feature", st.badge("NEW", color="red"), "was just released!")
-st.write("Status:", st.badge("Passing", color="green", icon="✓"))
-''')
