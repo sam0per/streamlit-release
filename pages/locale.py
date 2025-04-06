@@ -28,6 +28,7 @@ try:
     # Add practical formatting examples
     import locale
     from datetime import datetime
+    import babel.core
     from babel.numbers import format_currency, format_decimal
     from babel.dates import format_date
     
