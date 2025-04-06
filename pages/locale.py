@@ -29,23 +29,49 @@ try:
     import locale
     from datetime import datetime
     from babel.numbers import format_currency, format_decimal
+    from babel.dates import format_date
     
     # Example date
     current_date = datetime.now()
     
     # UK formatting (for comparison)
     uk_format = "en_GB"
-    locale.setlocale(locale.LC_ALL, uk_format)
-    uk_date = current_date.strftime('%d/%m/%Y')
+    uk_date = format_date(current_date, format='long', locale=uk_format)
     uk_number = format_decimal(1234567.89, locale=uk_format)
     uk_currency = format_currency(1234.56, 'GBP', locale=uk_format)
     
     # User's locale formatting
+    # Convert hyphen to underscore for compatibility
+    babel_locale = user_locale.replace('-', '_')
+    
     try:
-        locale.setlocale(locale.LC_ALL, user_locale.replace('-', '_'))
-        local_date = current_date.strftime('%x')
-        local_number = format_decimal(1234567.89, locale=user_locale)
-        local_currency = format_currency(1234.56, 'USD', locale=user_locale)
+        # Use babel for more robust international formatting (doesn't rely on system locales)
+        local_date = format_date(current_date, format='long', locale=babel_locale)
+        local_number = format_decimal(1234567.89, locale=babel_locale)
+        
+        # Determine appropriate currency based on region if available
+        if "-" in user_locale:
+            language, region = user_locale.split("-", 1)
+            if region == "US":
+                currency_code = "USD"
+            elif region == "GB":
+                currency_code = "GBP"
+            elif region in ["DE", "FR", "IT", "ES"]:
+                currency_code = "EUR"
+            elif region == "JP":
+                currency_code = "JPY"
+            elif region == "CN":
+                currency_code = "CNY"
+            elif region == "CA":
+                currency_code = "CAD"
+            elif region == "AU":
+                currency_code = "AUD"
+            else:
+                currency_code = "USD"  # Default
+        else:
+            currency_code = "USD"  # Default
+            
+        local_currency = format_currency(1234.56, currency_code, locale=babel_locale)
         
         st.write("### Formatting Comparison")
         col1, col2 = st.columns(2)
@@ -62,8 +88,25 @@ try:
             st.write(f"**Number:** {local_number}")
             st.write(f"**Currency:** {local_currency}")
     
-    except (locale.Error, ValueError):
-        st.warning(f"Could not apply locale formatting for {user_locale}")
+    except (ValueError, babel.core.UnknownLocaleError) as e:
+        st.warning(f"Could not apply locale formatting for {user_locale}: {str(e)}")
+        st.info("Falling back to default formatting")
+        
+        # Fallback to basic formatting
+        st.write("### Formatting Comparison")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### UK Format (en_GB)")
+            st.write(f"**Date:** {uk_date}")
+            st.write(f"**Number:** {uk_number}")
+            st.write(f"**Currency:** {uk_currency}")
+            
+        with col2:
+            st.markdown(f"#### Basic Format (Fallback)")
+            st.write(f"**Date:** {current_date.strftime('%Y-%m-%d')}")
+            st.write(f"**Number:** {'{:,.2f}'.format(1234567.89)}")
+            st.write(f"**Currency:** ${'{:,.2f}'.format(1234.56)}")
         
 except AttributeError:
     st.warning("This feature requires Streamlit v1.44.0 or higher. You seem to be running an older version.")
@@ -77,13 +120,13 @@ except AttributeError:
     
     with col1:
         st.markdown("#### UK Format (en_GB)")
-        st.write("**Date:** 06/04/2025")
+        st.write("**Date:** 6 April 2025")
         st.write("**Number:** 1,234,567.89")
         st.write("**Currency:** £1,234.56")
         
     with col2:
         st.markdown("#### US Format (en-US)")
-        st.write("**Date:** 4/6/2025")
+        st.write("**Date:** April 6, 2025")
         st.write("**Number:** 1,234,567.89")
         st.write("**Currency:** $1,234.56")
 
