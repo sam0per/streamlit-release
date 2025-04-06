@@ -1,0 +1,22 @@
+[theme]
+# Primary accent color for interactive elements
+primaryColor = "#FF4B4B"
+
+# Background color for the main content area
+backgroundColor = "#F0F2F6"
+
+# Background color used for the sidebar and most interactive widgets
+secondaryBackgroundColor = "#FFFFFF"
+
+# Color used for almost all text
+textColor = "#262730"
+
+# Font family for all text in the app, except code blocks
+# Accepted values: "sans serif", "serif", "monospace", "Roboto", "Source Sans Pro", etc.
+font = "Roboto"
+
+# Font size (px) for text elements
+baseFontSize = 16
+
+# Roundness of interface elements (px)
+cornerRadius = 8
